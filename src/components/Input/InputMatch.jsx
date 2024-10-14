@@ -1,12 +1,87 @@
 import PropTypes from "prop-types"; // 1. Importer PropTypes
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const InputMatch = ({ nbMatch, handleChange }) => {
-    const [nbPossibility, setNbPossibility] = useState(3);
+// Import images for sports
+import basketball from "../../assets/basketball.svg";
+import rugby from "../../assets/rugby.svg";
+import soccer from "../../assets/soccer.svg";
+import tennis from "../../assets/tennis.svg";
 
-    const handleClick = (e) => {
-        setNbPossibility(e.target.value);
+const InputMatch = ({ nbMatch, handleChange, changeTablePossibility }) => {
+    const [nbPossibility, setNbPossibility] = useState([3]);
+    const [sportSelected, setSportSelected] = useState(["soccer"]);
+    console.log(nbPossibility);
+
+    const changeSport = (sport, i) => {
+        // on met null dans odd3 si le sport n'a pas de match null
+        if (sport === "tennis" || sport === "basketball") {
+            handleChange({ target: { value: null } }, i, "odd3");
+        }
+
+        setSportSelected({ ...sportSelected, [i]: sport });
+        switch (sport) {
+            case "soccer":
+                setNbPossibility((prev) => {
+                    let newPossibility = [...prev];
+                    newPossibility[i] = 3;
+                    return newPossibility;
+                });
+
+                break;
+            case "basketball":
+                setNbPossibility((prev) => {
+                    let newPossibility = [...prev];
+                    newPossibility[i] = 2;
+                    return newPossibility;
+                });
+                break;
+            case "rugby":
+                setNbPossibility((prev) => {
+                    let newPossibility = [...prev];
+                    newPossibility[i] = 3;
+                    return newPossibility;
+                });
+                break;
+            case "tennis":
+                setNbPossibility((prev) => {
+                    let newPossibility = [...prev];
+                    newPossibility[i] = 2;
+                    return newPossibility;
+                });
+                break;
+            default:
+                setNbPossibility((prev) => {
+                    let newPossibility = [...prev];
+                    newPossibility[i] = 3;
+                    return newPossibility;
+                });
+
+                break;
+        }
     };
+
+    useEffect(() => {
+        nbMatch === 1
+            ? setNbPossibility([3])
+            : setNbPossibility([
+                  ...nbPossibility,
+                  (nbPossibility[nbMatch - 1] = 3),
+              ]);
+
+        setSportSelected({ ...sportSelected, [nbMatch - 1]: "soccer" });
+
+        return () => {
+            setNbPossibility([]);
+            setSportSelected([]);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [nbMatch]);
+
+    useEffect(() => {
+        changeTablePossibility(nbPossibility);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [nbPossibility]);
+
     const renderInputMatch = () => {
         const inputs = [];
         for (let i = 0; i < nbMatch; i++) {
@@ -14,7 +89,7 @@ const InputMatch = ({ nbMatch, handleChange }) => {
             inputs.push(
                 <div
                     key={i}
-                    className="p-5 border-2 rounded-xl border-red-500 m-5 flex-1 max-w-[24rem]"
+                    className="p-5 border-2 rounded-2xl border-red-500 m-5 flex-1 min-w-[25rem] max-w-[25rem]"
                 >
                     {" "}
                     {/* Ajouter une key unique ici */}
@@ -23,34 +98,72 @@ const InputMatch = ({ nbMatch, handleChange }) => {
                     </h2>
                     <div>
                         <h5 className="text-lg text-gray-800 italic font-semibold">
-                            Nombre de possibilité?
+                            Quel sport pour ce match?
                         </h5>
-                        <div className="flex flex-row flex-nowrap gap-10 justify-center p-2">
+
+                        <div className="flex flex-row nowrap gap-10 justify-center my-4">
                             <button
-                                value={2}
-                                className="bg-red-500 text-white p-2 rounded-full w-10 h-10 text-center hover:bg-red-600 focus:border-2 focus:border-yellow-400"
-                                onClick={handleClick}
+                                value={"soccer"}
+                                className={`border-red-500 rounded-full p-2 ${
+                                    sportSelected[i] === "soccer" && "border-2"
+                                }`}
+                                onClick={() => changeSport("soccer", i)}
                             >
-                                2
+                                <img src={soccer} alt="soccer" width={30} />
                             </button>
                             <button
-                                value={3}
-                                className="bg-red-500 text-white p-2 rounded-full w-10 h-10  text-center hover:bg-red-600 focus:border-2 focus:border-yellow-400"
-                                onClick={handleClick}
+                                value={"basketball"}
+                                className={`border-red-500 rounded-full p-2 ${
+                                    sportSelected[i] === "basketball" &&
+                                    "border-2"
+                                }`}
+                                onClick={() => changeSport("basketball", i)}
                             >
-                                3
+                                <img
+                                    src={basketball}
+                                    width={30}
+                                    alt="basketball"
+                                />
+                            </button>
+                            <button
+                                value={"rugby"}
+                                className={`border-red-500 rounded-full p-2 ${
+                                    sportSelected[i] === "rugby" && "border-2"
+                                }`}
+                                onClick={() => changeSport("rugby", i)}
+                            >
+                                <img src={rugby} width={30} alt="rugby" />
+                            </button>
+                            <button
+                                value={"tennis"}
+                                className={`border-red-500 rounded-full p-2  ${
+                                    sportSelected[i] === "tennis" && "border-2"
+                                }`}
+                                onClick={() => changeSport("tennis", i)}
+                            >
+                                <img src={tennis} width={30} alt="tennis" />
                             </button>
                         </div>
-                        `
                     </div>
-                    <div className="flex justify-between my-5 items-start gap-2">
-                        <div className="w-1/2 flex flex-col gap-3">
+                    <div className="flex flex-col mb-2 items-start gap-5">
+                        <div className="w-full flex flex-row gap-3">
                             <input
                                 type="text"
                                 placeholder="Equipe 1"
-                                className="w-full p-2 border-2 border-gray-300 rounded-md focus:outline-red-500 font-bold uppercase"
+                                className="w-full p-2 border-2 border-gray-300 rounded-md focus:outline-red-500 font-bold uppercase text-center"
                                 onChange={(e) => handleChange(e, i, "team1")}
                             />
+                            <h6 className="text-xl text-gray-900 italic font-semibold p-2">
+                                VS
+                            </h6>
+                            <input
+                                type="text"
+                                placeholder="Equipe 2"
+                                className="w-full p-2 border-2 border-gray-300 rounded-md focus:outline-red-500 font-bold uppercase text-center"
+                                onChange={(e) => handleChange(e, i, "team2")}
+                            />
+                        </div>
+                        <div className="w-full flex justify-between flex-row flex-nowrap gap-3">
                             <div className="w-[100px]">
                                 <input
                                     placeholder="Cote 1"
@@ -58,12 +171,7 @@ const InputMatch = ({ nbMatch, handleChange }) => {
                                     onChange={(e) => handleChange(e, i, "odd1")}
                                 />
                             </div>
-                        </div>
-                        <div className="flex flex-col items-center  gap-3 w-auto">
-                            <h6 className="text-xl text-gray-900 italic font-semibold p-2">
-                                VS
-                            </h6>
-                            {parseInt(nbPossibility) === 3 && (
+                            {nbPossibility[i] === 3 && (
                                 <div className="w-[100px]">
                                     <input
                                         placeholder="Cote Null"
@@ -74,14 +182,6 @@ const InputMatch = ({ nbMatch, handleChange }) => {
                                     />
                                 </div>
                             )}
-                        </div>
-                        <div className="w-1/2 flex justify-between flex-col items-end gap-3">
-                            <input
-                                type="text"
-                                placeholder="Equipe 2"
-                                className="w-full p-2 border-2 border-gray-300 rounded-md focus:outline-red-500 text-right font-bold uppercase "
-                                onChange={(e) => handleChange(e, i, "team2")}
-                            />
                             <div className="w-[100px]">
                                 <input
                                     placeholder="Cote 2"
@@ -108,6 +208,7 @@ const InputMatch = ({ nbMatch, handleChange }) => {
 InputMatch.propTypes = {
     nbMatch: PropTypes.number.isRequired, // nbMatch doit être un nombre et est requis
     handleChange: PropTypes.func.isRequired, // handleChange doit être une fonction et est requise
+    changeTablePossibility: PropTypes.func.isRequired, // changeTablePossibility doit être une fonction et est requise
 };
 
 export { InputMatch };

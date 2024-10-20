@@ -114,7 +114,7 @@ const Home = () => {
     const BtnCombinaisons = document.getElementById("btn-combinaisons");
 
     return (
-        <div className="flex flex-col items-center min-h-[90vh]">
+        <div className="flex flex-col items-center min-h-[90vh] w-full">
             {/* ENtre tes matches et les cotes et voit les combinaisons possibles */}
             <h1 className="text-center text-4xl font-semibold text-gray-800">
                 Bienvenue sur BetKit !<br />

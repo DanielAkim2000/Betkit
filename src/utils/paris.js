@@ -7,13 +7,8 @@
 //     ["Real Burgos", "Mirandes"],
 // ];
 
-const getRandomNumber = () => {
-    let r = Math.floor(Math.random() * 3);
-    if (r === 0) {
-        return getRandomNumber();
-        // 1 === Victory equipe 1 , 2 === Match Null, 3 === Victory equipe 2
-    }
-    return r;
+const getRandomNumber = (max) => {
+    return Math.floor(Math.random() * max) + 1;
 };
 
 //Compare 2 objects
@@ -68,17 +63,44 @@ class Paris {
         this.cotes = cotes;
     }
 
-    getOneTicket() {
+    getAllCombinations() {
+        let results = [];
+        const outcomes = [1, 2, 3]; // Victoire equipe 1, match nul, victoire equipe 2
+
+        const generateCombinations = (current, index) => {
+            if (index === this.matches.length) {
+                results.push([...current]);
+                return;
+            }
+
+            for (let outcome of outcomes) {
+                current.push(outcome);
+                generateCombinations(current, index + 1);
+                current.pop();
+            }
+        };
+
+        generateCombinations([], 0);
+        return results;
+    }
+
+    getOneTicketFromCombination(combination) {
         let ticket = {};
         let cote = 1;
-        for (let match of this.matches) {
-            let r = getRandomNumber();
+
+        for (let i = 0; i < this.matches.length; i++) {
+            let match = this.matches[i];
+            let result = combination[i];
             ticket[match[0] + " VS " + match[1]] = {
-                result: match[r - 1] ? match[r - 1] : "Match Null",
+                result:
+                    result === 1
+                        ? match[0]
+                        : result === 2
+                        ? "Match Null"
+                        : match[1],
             };
 
-            let index = this.matches.indexOf(match);
-            cote *= this.cotes[index][r - 1];
+            cote *= this.cotes[i][result - 1];
         }
 
         cote = cote.toPrecision(5);
@@ -87,33 +109,72 @@ class Paris {
     }
 
     async getNTickets(n) {
-        let result = [];
-        let resultCote = [];
-        if (n === 0) {
-            return { result, resultCote };
-        }
-        if (n <= 3 ** this.matches.length) {
-            for (let i = 0; i < n; i++) {
-                let { ticket, cote } = this.getOneTicket();
-                let verifTicket = verifTicketsInResult(ticket, result);
-                while (verifTicket) {
-                    let obj = this.getOneTicket();
-                    ticket = obj.ticket;
-                    cote = obj.cote;
-                    verifTicket = verifTicketsInResult(ticket, result);
-                }
+        let allCombinations = this.getAllCombinations();
+        let selectedTickets = [];
 
-                resultCote.push(cote);
-                result.push(ticket);
+        if (n > allCombinations.length) {
+            return { result: [], resultCote: [] };
+        }
+
+        while (selectedTickets.length < n) {
+            let randomIndex = Math.floor(
+                Math.random() * allCombinations.length
+            );
+            let combination = allCombinations[randomIndex];
+            let { ticket, cote } =
+                this.getOneTicketFromCombination(combination);
+
+            if (!verifTicketsInResult(ticket, selectedTickets)) {
+                selectedTickets.push(ticket);
             }
-        } else {
-            return { result, resultCote };
         }
 
-        console.log(result);
-        result = result.sort((a, b) => a.cote - b.cote);
-        resultCote = resultCote.sort((a, b) => a - b);
-        return { result, resultCote };
+        let resultCote = selectedTickets.map((ticket) => ticket.cote);
+        selectedTickets.sort((a, b) => a.cote - b.cote);
+        resultCote.sort((a, b) => a - b);
+
+        return { result: selectedTickets, resultCote };
+    }
+
+    async getNTicketsRandom(n) {
+        let selectedTickets = [];
+
+        while (selectedTickets.length < n) {
+            let ticket = {};
+            let cote = 1;
+            for (let i = 0; i < this.matches.length; i++) {
+                // on recupere la longueur de la cote pour savoir combien de possibilite il y a
+                let max = this.cotes[i].length;
+                // ensuite on genere un nombre aleatoire entre 1 et la longueur du tableau de cote
+                let r = getRandomNumber(max);
+                // on recupere le match courant et on insere le resultat dans le ticket avec le nom des equipes
+                // on multiplie la cote par la cote du resultat
+                // on fait ca pour chaque match
+                // si le max = 3 alors on a 3 possibilites de resultat
+                // la troisieme possibilite est le match nul comme ca chaque match qui a 3 possibilites de resultat aura forcement un resultat
+                // et pour les match qui ont 2 possibilites de resultat notre nombre aleatoire sera soit 1 soit 2 mais jamais 3
+                let match = this.matches[i];
+                ticket[match[0] + " VS " + match[1]] = {
+                    result:
+                        r === 1 ? match[0] : r === 2 ? match[1] : "Match Null",
+                };
+
+                cote *= this.cotes[i][r - 1];
+            }
+
+            cote = parseFloat(cote.toFixed(2));
+            ticket.cote = cote;
+
+            if (!verifTicketsInResult(ticket, selectedTickets)) {
+                selectedTickets.push(ticket);
+            }
+        }
+
+        let resultCote = selectedTickets.map((ticket) => ticket.cote);
+        selectedTickets.sort((a, b) => a.cote - b.cote);
+        resultCote.sort((a, b) => a - b);
+
+        return { result: selectedTickets, resultCote };
     }
 }
 

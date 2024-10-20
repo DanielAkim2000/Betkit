@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import image from "../assets/fleche.svg";
+import { CardTicket } from "../components";
 import { Paris } from "../utils";
 
 const Tickets = () => {
@@ -8,12 +8,13 @@ const Tickets = () => {
     let state = location.state ?? {
         matches: {},
         cotes: {},
+        numberOfTickets: 0,
     };
 
     const [allMatches, setAllMatches] = useState([]);
     const [allCotes, setAllCotes] = useState([]);
     const [allTickets, setAllTickets] = useState([]);
-    let n = 9;
+    const [numberOfTickets, setNumberOfTickets] = useState(0);
 
     const setDataForMatches = (data) => {
         let matches = data.map((match) => [match.team1, match.team2]);
@@ -31,15 +32,25 @@ const Tickets = () => {
         }
     };
 
-    const generateTickets = (matches, cotes) => {
-        let parisclassName = new Paris(matches, cotes);
-        parisclassName.getNTickets(n).then(({ result, resultCote }) => {
-            setAllTickets(result);
-            console.log(result);
+    const generateTickets = async (matches, cotes) => {
+        // si la cote odd3 est null on enleve la possibilite de match null on envoie un tableau de 2 cases
+        const updatedCotes = cotes.map((cote) => {
+            if (cote[2] === null) {
+                cote.splice(2, 1);
+            }
+            return cote;
         });
+
+        let parisclassName = new Paris(matches, updatedCotes);
+        // eslint-disable-next-line no-unused-vars
+        parisclassName
+            .getNTicketsRandom(numberOfTickets)
+            .then(({ result, resultCote }) => {
+                setAllTickets(result);
+                // console.log(result);
+            });
     };
 
-    // Mettre à jour les données de matches et cotes à partir du state
     useEffect(() => {
         if (state.matches.length > 0) {
             setDataForMatches(state.matches);
@@ -47,9 +58,12 @@ const Tickets = () => {
         if (state.cotes.length > 0) {
             setDataForCotes(state.cotes);
         }
-    }, [state.matches, state.cotes]); // Ajout des dépendances pour éviter la boucle infinie
+        if (state.numberOfTickets > 0) {
+            setNumberOfTickets(state.numberOfTickets);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state.matches, state.cotes, state.numberOfTickets]);
 
-    // Générer les tickets une fois que les données sont mises à jour
     useEffect(() => {
         if (
             allMatches.length === state.matches.length &&
@@ -57,56 +71,18 @@ const Tickets = () => {
         ) {
             generateTickets(allMatches, allCotes);
         }
-    }, [allMatches, allCotes]); // Utilise les bonnes dépendances
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allMatches, allCotes]);
 
     return (
         <div>
             <h1 className="text-center text-4xl font-semibold uppercase text-gray-800 pb-10">
                 Tickets
             </h1>
-            <div className="border-t-2 p-10 border-red-500 flex flex-row flex-wrap gap-10 justify-around items-center">
+            <div className="border-t-2 p-10 border-red-500 flex flex-row flex-wrap gap-10 justify-start items-center">
                 {allTickets.map((ticket, index) => (
-                    <div className="flex flex-col gap-5" key={index}>
-                        <div className="inline-flex justify-center items-center border-2 border-red-500 rounded-lg p-1">
-                            <i className="font-bold italic uppercase text-lg">{`Ticket ${
-                                index + 1
-                            }`}</i>
-                            <div>
-                                <img src={image} alt="fleche" />
-                            </div>
-                        </div>
-                        <div className="border-2 border-red-500 rounded-lg p-4">
-                            {Object.keys(ticket).map((key) => {
-                                if (key !== "cote") {
-                                    return (
-                                        <div className="" key={key}>
-                                            <b className="uppercase text-base font-medium ">
-                                                {key}
-                                            </b>
-                                            <p className="text-amber-300 font-semibold italic pb-2 mb-2 text-lg border-b-2 border-red-500 uppercase">
-                                                {ticket[key].result}
-                                            </p>
-                                        </div>
-                                    );
-                                }
-                                if (key === "cote") {
-                                    return (
-                                        <div className="mt-5" key={key}>
-                                            <b className="text-2xl text-green-500 italic font-extrabold">
-                                                {ticket.cote}
-                                            </b>
-                                        </div>
-                                    );
-                                }
-
-                                // key === "cote" && (
-                                //     <div className="cote">
-                                //         <b>Cote: {ticket.cote}</b>
-                                //     </div>
-                                // )
-                            })}
-                        </div>
-                    </div>
+                    <CardTicket key={index} index={index} ticket={ticket} />
                 ))}
             </div>
         </div>

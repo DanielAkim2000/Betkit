@@ -8,7 +8,7 @@ const Header = () => {
                     </a>
                 </div>
                 <div className="flex items-center">
-                    <a
+                    {/* <a
                         href="/login"
                         className="text-lg text-gray-600 hover:text-red-500"
                     >
@@ -19,7 +19,7 @@ const Header = () => {
                         className="text-lg text-gray-600 hover:text-red-500 ml-4"
                     >
                         Register
-                    </a>
+                    </a> */}
                 </div>
             </nav>
         </header>

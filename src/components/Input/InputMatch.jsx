@@ -174,7 +174,7 @@ const InputMatch = ({
             inputs.push(
                 <div
                     key={i}
-                    className="p-5 border-2  rounded-2xl border-red-500 m-5 max-sm:m-auto flex-1 min-w-[25rem] max-w-[25rem] relative"
+                    className="p-5 border-2  rounded-2xl border-red-500 m-5 max-sm:m-auto flex-1 min-w-[23rem] max-w-[23rem] relative"
                 >
                     {" "}
                     {/* Ajouter une key unique ici */}
@@ -209,7 +209,7 @@ const InputMatch = ({
                         <div className="flex flex-row nowrap gap-10 justify-center my-4">
                             <button
                                 value={"soccer"}
-                                className={` rounded-full transition duration-700 ease-in-out p-2 ${
+                                className={` rounded-full transition duration-300 ease-in-out p-2 ${
                                     sportSelected[i] === "soccer"
                                         ? "border-2 border-red-500"
                                         : ""
@@ -220,7 +220,7 @@ const InputMatch = ({
                             </button>
                             <button
                                 value={"basketball"}
-                                className={`rounded-full p-2 transition duration-700 ease-in-out ${
+                                className={`rounded-full p-2 transition duration-300 ease-in-out ${
                                     sportSelected[i] === "basketball"
                                         ? "border-2 border-red-500 "
                                         : ""
@@ -235,7 +235,7 @@ const InputMatch = ({
                             </button>
                             <button
                                 value={"rugby"}
-                                className={` rounded-full p-2 transition duration-700 ease-in-out ${
+                                className={` rounded-full p-2 transition duration-300 ease-in-out ${
                                     sportSelected[i] === "rugby"
                                         ? "border-2 border-red-500"
                                         : ""
@@ -246,7 +246,7 @@ const InputMatch = ({
                             </button>
                             <button
                                 value={"tennis"}
-                                className={` rounded-full p-2 transition duration-700 ease-in-out  ${
+                                className={` rounded-full p-2 transition duration-300 ease-in-out  ${
                                     sportSelected[i] === "tennis"
                                         ? "border-2 border-red-500"
                                         : ""
@@ -263,7 +263,7 @@ const InputMatch = ({
                                 value={matches[i]?.team1 || ""}
                                 type="text"
                                 placeholder="Equipe 1"
-                                className="w-full p-2 border-2 border-gray-300 rounded-md transition-all duration-1000 ease-in-out outline-none focus:border-red-500 font-bold uppercase text-center"
+                                className="w-full p-2 border-2 border-gray-300 rounded-md transition-all duration-300 ease-in-out outline-none focus:border-red-500 font-bold uppercase text-center"
                                 onChange={(e) => handleChange(e, i, "team1")}
                             />
                             <h6 className="text-xl text-gray-900 italic font-semibold p-2">
@@ -273,7 +273,7 @@ const InputMatch = ({
                                 value={matches[i]?.team2 || ""}
                                 type="text"
                                 placeholder="Equipe 2"
-                                className="w-full p-2 border-2 border-gray-300 rounded-md transition-all duration-1000 ease-in-out outline-none focus:border-red-500 font-bold uppercase text-center"
+                                className="w-full p-2 border-2 border-gray-300 rounded-md transition-all duration-300 ease-in-out outline-none focus:border-red-500 font-bold uppercase text-center"
                                 onChange={(e) => handleChange(e, i, "team2")}
                             />
                         </div>
@@ -282,7 +282,7 @@ const InputMatch = ({
                                 <input
                                     value={cotes[i]?.odd1 || ""}
                                     placeholder="Cote 1"
-                                    className="w-full p-2 border-2 border-yellow-400 bg-yellow-400 rounded-md transition-all duration-1000 ease-in-out outline-none focus:border-red-500 font-extrabold text-center text-lg "
+                                    className="w-full p-2 border-2 border-yellow-400 bg-yellow-400 rounded-md transition-all duration-300 ease-in-out outline-none focus:border-red-500 font-extrabold text-center text-lg "
                                     onChange={(e) => handleChange(e, i, "odd1")}
                                 />
                             </div>
@@ -291,7 +291,7 @@ const InputMatch = ({
                                     <input
                                         value={cotes[i]?.odd3 || ""}
                                         placeholder="Cote Null"
-                                        className="w-full p-2 border-2 border-yellow-400 bg-yellow-400 rounded-md transition-all duration-1000 ease-in-out outline-none focus:border-red-500 inline-block font-extrabold text-center text-lg  "
+                                        className="w-full p-2 border-2 border-yellow-400 bg-yellow-400 rounded-md transition-all duration-300 ease-in-out outline-none focus:border-red-500 inline-block font-extrabold text-center text-lg  "
                                         onChange={(e) =>
                                             handleChange(e, i, "odd3")
                                         }
@@ -302,7 +302,7 @@ const InputMatch = ({
                                 <input
                                     value={cotes[i]?.odd2 || ""}
                                     placeholder="Cote 2"
-                                    className="w-full p-2 border-2 border-yellow-400 bg-yellow-400 rounded-md transition-all duration-1000 ease-in-out outline-none focus:border-red-500 inline-block font-extrabold text-center text-lg  "
+                                    className="w-full p-2 border-2 border-yellow-400 bg-yellow-400 rounded-md transition-all duration-300 ease-in-out outline-none focus:border-red-500 inline-block font-extrabold text-center text-lg  "
                                     onChange={(e) => handleChange(e, i, "odd2")}
                                 />
                             </div>

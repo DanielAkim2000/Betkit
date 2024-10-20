@@ -130,7 +130,7 @@ const Home = () => {
                 </h3>
             </div>
             {/* Pour commencer, entre les nom des 2 equipes et les cotes si tu as plusieurs match appuie sur le button + qui te permettra d entrer un mathc de plus */}
-            <div className="flex flex-row items-center justify-center flex-wrap">
+            <div className="flex flex-row items-center justify-center my-5 flex-wrap">
                 <InputMatch
                     matches={matches}
                     cotes={cotes}

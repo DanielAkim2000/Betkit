@@ -174,7 +174,7 @@ const InputMatch = ({
             inputs.push(
                 <div
                     key={i}
-                    className="p-5 border-2 rounded-2xl border-red-500 m-5 flex-1 min-w-[25rem] max-w-[25rem] relative"
+                    className="p-5 border-2  rounded-2xl border-red-500 m-5 max-sm:m-auto flex-1 min-w-[25rem] max-w-[25rem] relative"
                 >
                     {" "}
                     {/* Ajouter une key unique ici */}

@@ -2,7 +2,7 @@
     "name": "betkit",
     "private": true,
     "version": "0.0.0",
-    "homepage": "https://danielakim2000.github.io/Betkit",
+    "homepage": "https://danielakim2000.github.io/Betkit/",
     "type": "module",
     "scripts": {
         "dev": "vite",

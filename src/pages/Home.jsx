@@ -10,8 +10,11 @@ const Home = () => {
     const [cotes, setCotes] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [tablePossibility, setTablePossibility] = useState([3]);
+    const [numberOfTickets, setNumberOfTickets] = useState(0);
 
     let nbPossibility = tablePossibility.reduce((a, b) => a * b, 1);
+
+    console.log(matches);
 
     const changeTablePossibility = (table) => {
         setTablePossibility(table);
@@ -30,6 +33,8 @@ const Home = () => {
         const value = e.target.value;
         const newMatches = [...matches];
         const newCotes = [...cotes];
+
+        //Anciens code
         // if (statut === "team1") {
         //     newMatches[index] = { ...newMatches[index], team1: value };
         // } else if (statut === "team2") {
@@ -41,6 +46,28 @@ const Home = () => {
         // } else if (statut === "odd3") {
         //     newCotes[index] = { ...newCotes[index], odd3: value };
         // }
+
+        // if la valeur est null on enleve le match et que le statut n'est pas odd3
+        if (value === null && statut === "close") {
+            let newMatches = [...matches];
+            let newCotes = [...cotes];
+            let newTablePossibility = [...tablePossibility];
+
+            newMatches.splice(index, 1);
+            newCotes.splice(index, 1);
+            newTablePossibility.splice(index, 1);
+
+            // console.log("New matches", newMatches);
+
+            // on met a jour le nombre de matchs
+            setMatches(newMatches);
+            setCotes(newCotes);
+            setNbMatchs(nbMatchs - 1);
+            setTablePossibility(newTablePossibility);
+
+            return;
+        }
+
         switch (statut) {
             case "team1":
                 newMatches[index] = { ...newMatches[index], team1: value };
@@ -67,8 +94,9 @@ const Home = () => {
 
         setMatches(newMatches);
         setCotes(newCotes);
-        console.log(cotes);
-        console.log(matches);
+
+        // console.log(cotes);
+        // console.log(matches);
     };
 
     const ensureButtonVisible = (button) => {
@@ -104,6 +132,8 @@ const Home = () => {
             {/* Pour commencer, entre les nom des 2 equipes et les cotes si tu as plusieurs match appuie sur le button + qui te permettra d entrer un mathc de plus */}
             <div className="flex flex-row items-center justify-center flex-wrap">
                 <InputMatch
+                    matches={matches}
+                    cotes={cotes}
                     nbMatch={nbMatchs}
                     handleChange={handleChange}
                     changeTablePossibility={changeTablePossibility}
@@ -124,7 +154,7 @@ const Home = () => {
             </button>
             {/* modal for number ticket show */}
             {showModal && (
-                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 flex justify-center items-center">
+                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 flex justify-center items-center z-30">
                     <div className="bg-white rounded-xl min-w-[20rem] min-h-[10rem] flex flex-col justify-center items-center border-2 p-3 border-red-500 scale-90">
                         <div className="flex justify-end w-full">
                             <button
@@ -146,13 +176,20 @@ const Home = () => {
                         <div className="flex flex-row justify-center items-center w-full p-5 gap-5 mb-3">
                             <input
                                 max={nbPossibility}
-                                className="border-2 border-red-500 rounded-lg  p-2 mt-5 flex-5 focus:border-red-500 focus:outline-red-500 font-bold text-lg"
+                                className="border-2 border-red-500 rounded-lg  p-2 mt-5 w-1/4 text-center focus:border-red-500 focus:outline-red-500 font-bold text-lg"
+                                onChange={(e) =>
+                                    setNumberOfTickets(parseInt(e.target.value))
+                                }
                             />
                             <button
                                 className="bg-red-500 border-red-500 border-2  text-white p-2 rounded-lg mt-5 flex-1 h-100 text-lg font-bold hover:bg-red-600"
                                 onClick={() =>
                                     navigate("/tickets", {
-                                        state: { matches, cotes },
+                                        state: {
+                                            matches,
+                                            cotes,
+                                            numberOfTickets,
+                                        },
                                     })
                                 }
                             >

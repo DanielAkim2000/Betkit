@@ -8,12 +8,13 @@ const Tickets = () => {
     let state = location.state ?? {
         matches: {},
         cotes: {},
+        numberOfTickets: 0,
     };
 
     const [allMatches, setAllMatches] = useState([]);
     const [allCotes, setAllCotes] = useState([]);
     const [allTickets, setAllTickets] = useState([]);
-    let n = 9;
+    const [numberOfTickets, setNumberOfTickets] = useState(0);
 
     const setDataForMatches = (data) => {
         let matches = data.map((match) => [match.team1, match.team2]);
@@ -42,10 +43,12 @@ const Tickets = () => {
 
         let parisclassName = new Paris(matches, updatedCotes);
         // eslint-disable-next-line no-unused-vars
-        parisclassName.getNTicketsRandom(n).then(({ result, resultCote }) => {
-            setAllTickets(result);
-            console.log(result);
-        });
+        parisclassName
+            .getNTicketsRandom(numberOfTickets)
+            .then(({ result, resultCote }) => {
+                setAllTickets(result);
+                // console.log(result);
+            });
     };
 
     useEffect(() => {
@@ -55,8 +58,11 @@ const Tickets = () => {
         if (state.cotes.length > 0) {
             setDataForCotes(state.cotes);
         }
+        if (state.numberOfTickets > 0) {
+            setNumberOfTickets(state.numberOfTickets);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.matches, state.cotes]);
+    }, [state.matches, state.cotes, state.numberOfTickets]);
 
     useEffect(() => {
         if (

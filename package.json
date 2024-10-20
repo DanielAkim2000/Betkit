@@ -9,8 +9,8 @@
         "build": "vite build",
         "lint": "eslint .",
         "preview": "vite preview",
-        "predeploy": "npm run build",
-        "deploy": "gh-pages -d build"
+        "predeploy": "pnpm run build",
+        "deploy": "gh-pages -d buil"
     },
     "dependencies": {
         "prop-types": "^15.8.1",
